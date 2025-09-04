@@ -6,14 +6,20 @@
   <style>
     body {
       margin: 0;
-      height: 100vh;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #ffafbd, #ffc3a0);
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+      overflow-x: hidden;
+    }
+
+    section {
+      min-height: 100vh;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      background: linear-gradient(135deg, #ffafbd, #ffc3a0);
-      font-family: 'Comic Sans MS', cursive, sans-serif;
-      overflow: hidden;
+      text-align: center;
+      padding: 50px 20px;
     }
 
     img {
@@ -53,16 +59,18 @@
       text-align: center;
       display: none;
       max-width: 600px;
+      line-height: 1.8;
     }
 
     /* Floating hearts */
     .heart {
-      position: absolute;
+      position: fixed;
       width: 20px;
       height: 20px;
       background: red;
       transform: rotate(45deg);
       animation: floatUp 6s linear infinite;
+      z-index: -1;
     }
 
     .heart::before,
@@ -91,20 +99,38 @@
         opacity: 1;
       }
       100% {
-        transform: translateY(-800px) rotate(45deg);
+        transform: translateY(-100vh) rotate(45deg);
         opacity: 0;
       }
     }
   </style>
 </head>
 <body>
-  <!-- Add your picture here -->
-  <img src="63e23435-b6e9-40c1-b84a-9fe85c8c8e5a.jfif" alt="Our Anniversary Photo">
+  <!-- Section 1 -->
+  <section>
+    <img src="images/photo.jpg" alt="Our Anniversary Photo">
+    <h1>Happy Anniversary Bhie ❤️</h1>
+  </section>
 
-  <h1>Happy Anniversary Bhie ❤️</h1>
-  <button onclick="showMessage()">Click for a Surprise 💌</button>
-  <div id="message">You are the best part of my life. I’m so grateful for every moment with you.  
-  Happy Anniversary, my love! 💖</div>
+  <!-- Section 2 -->
+  <section>
+    <button onclick="showMessage()">Click for a Surprise 💌</button>
+    <div id="message">
+      You are the best part of my life.  
+      I’m so grateful for every moment with you. 💕  
+      <br><br>
+      Happy Anniversary, my love! 💖
+    </div>
+  </section>
+
+  <!-- Section 3 -->
+  <section>
+    <h1>Forever & Always ❤️</h1>
+    <p style="color:white; max-width:600px; font-size:1.3rem;">
+      No matter what happens, I’ll always be by your side.  
+      Thank you for being my everything 🌹  
+    </p>
+  </section>
 
   <script>
     function showMessage() {
