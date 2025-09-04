@@ -1,14 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Happy Anniversary ❤️</title>
   <style>
+    :root { --gap: 20px; }
+    html { scroll-behavior: smooth; }
+    * { box-sizing: border-box; }
     body {
       margin: 0;
       min-height: 100vh;
       background: linear-gradient(135deg, #ffafbd, #ffc3a0);
-      font-family: 'Comic Sans MS', cursive, sans-serif;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, 'Comic Sans MS', cursive, sans-serif;
       overflow-x: hidden;
     }
 
@@ -19,139 +23,195 @@
       justify-content: center;
       align-items: center;
       text-align: center;
-      padding: 50px 20px;
+      padding: 60px 20px;
+      gap: var(--gap);
+      position: relative;
+      z-index: 1; /* keep above hearts */
     }
 
-    img {
-      max-width: 300px;
-      border-radius: 20px;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-      margin-bottom: 20px;
+    img#photo {
+      width: min(80vw, 340px);
+      aspect-ratio: 4 / 5;
+      object-fit: cover;
+      border-radius: 22px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
     }
 
     h1 {
       color: #fff;
-      font-size: 3rem;
-      text-shadow: 2px 2px 5px rgba(0,0,0,0.2);
-      margin-bottom: 20px;
+      font-size: clamp(2rem, 6vw, 3.2rem);
+      text-shadow: 2px 2px 5px rgba(0,0,0,0.25);
+      margin: 0 0 4px 0;
+    }
+
+    p.lead {
+      color: #fff;
+      opacity: 0.95;
+      max-width: 680px;
+      font-size: clamp(1rem, 2.2vw, 1.25rem);
+      line-height: 1.8;
+      margin: 0 auto;
     }
 
     button {
       padding: 12px 24px;
-      font-size: 1.2rem;
+      font-size: 1.1rem;
       border: none;
-      border-radius: 25px;
+      border-radius: 999px;
       background: #ff6f91;
       color: white;
       cursor: pointer;
-      transition: transform 0.2s;
+      transition: transform 0.2s, filter 0.2s;
+      box-shadow: 0 10px 22px rgba(255, 70, 120, 0.35);
     }
 
-    button:hover {
-      transform: scale(1.1);
-      background: #ff3f6c;
-    }
+    button:hover { transform: translateY(-2px) scale(1.04); filter: brightness(1.05); }
 
     #message {
-      margin-top: 30px;
-      font-size: 1.5rem;
-      color: #fff;
-      text-align: center;
       display: none;
-      max-width: 600px;
-      line-height: 1.8;
+      color: #fff;
+      max-width: 720px;
+      font-size: clamp(1.05rem, 2.4vw, 1.4rem);
+      line-height: 1.9;
+      background: rgba(255, 255, 255, 0.12);
+      padding: 18px 20px;
+      border-radius: 16px;
+      backdrop-filter: blur(2px);
     }
 
     /* Floating hearts */
     .heart {
       position: fixed;
-      width: 20px;
-      height: 20px;
-      background: red;
+      width: 22px; height: 22px;
       transform: rotate(45deg);
-      animation: floatUp 6s linear infinite;
-      z-index: -1;
+      animation: floatUp 7s linear infinite;
+      top: 100vh; left: 0;
+      pointer-events: none;
+      z-index: 0; /* behind content */
     }
-
-    .heart::before,
-    .heart::after {
+    .heart, .heart::before, .heart::after { background: #ff4d6d; }
+    .heart::before, .heart::after {
       content: "";
       position: absolute;
-      width: 20px;
-      height: 20px;
-      background: red;
+      width: 22px; height: 22px;
       border-radius: 50%;
     }
-
-    .heart::before {
-      top: -10px;
-      left: 0;
-    }
-
-    .heart::after {
-      left: -10px;
-      top: 0;
-    }
+    .heart::before { top: -11px; left: 0; }
+    .heart::after { left: -11px; top: 0; }
 
     @keyframes floatUp {
-      0% {
-        transform: translateY(0) rotate(45deg);
-        opacity: 1;
-      }
-      100% {
-        transform: translateY(-100vh) rotate(45deg);
-        opacity: 0;
-      }
+      0%   { transform: translateY(0) rotate(45deg); opacity: 1; }
+      100% { transform: translateY(-110vh) rotate(45deg); opacity: 0; }
+    }
+
+    /* Scroll hint */
+    .scroll-hint {
+      position: fixed;
+      bottom: 18px; left: 50%; transform: translateX(-50%);
+      text-decoration: none; color: white;
+      font-size: 0.95rem;
+      display: inline-flex; flex-direction: column; align-items: center; gap: 6px;
+      z-index: 2;
+      opacity: 0.9;
+    }
+    .chev {
+      width: 22px; height: 22px; border-right: 2px solid #fff; border-bottom: 2px solid #fff; transform: rotate(45deg);
+      animation: bounce 1.6s infinite;
+    }
+    @keyframes bounce { 0%,100%{ transform: translateY(0) rotate(45deg);} 50%{ transform: translateY(6px) rotate(45deg);} }
+
+    /* Accessibility: reduce motion */
+    @media (prefers-reduced-motion: reduce) {
+      .heart { animation: none; display: none; }
+      .chev { animation: none; }
+      html { scroll-behavior: auto; }
     }
   </style>
 </head>
 <body>
-  <!-- Section 1 -->
-  <section>
-    <img src="images/photo.jpg" alt="Our Anniversary Photo">
-    <h1>Happy Anniversary Bhie ❤️</h1>
+  <!-- Section 1: Photo + Greeting -->
+  <section id="s1">
+    <img id="photo" alt="Our Anniversary Photo" />
+    <h1>Happy Anniversary, Bhie ❤️</h1>
+    <p class="lead">You make every day brighter. Here's a little page I made just for us. Scroll down for a surprise. 💌</p>
   </section>
 
-  <!-- Section 2 -->
-  <section>
-    <button onclick="showMessage()">Click for a Surprise 💌</button>
-    <div id="message">
-      You are the best part of my life.  
-      I’m so grateful for every moment with you. 💕  
-      <br><br>
-      Happy Anniversary, my love! 💖
-    </div>
+  <!-- Section 2: Surprise button -->
+  <section id="s2">
+    <h1>Click the Surprise 💌</h1>
+    <button id="surpriseBtn" onclick="showMessage()">Open Love Note</button>
+    <div id="message">You are the best part of my life. I’m so grateful for every moment with you. <br/>
+      Happy Anniversary, my love! 💖</div>
   </section>
 
-  <!-- Section 3 -->
-  <section>
+  <!-- Section 3: Closing -->
+  <section id="s3">
     <h1>Forever & Always ❤️</h1>
-    <p style="color:white; max-width:600px; font-size:1.3rem;">
-      No matter what happens, I’ll always be by your side.  
-      Thank you for being my everything 🌹  
-    </p>
+    <p class="lead">No matter what happens, I’ll always be by your side. Thank you for being my everything. 🌹</p>
   </section>
+
+  <!-- Scroll hint to next section -->
+  <a href="#s2" class="scroll-hint" aria-label="Scroll down">
+    <div class="chev"></div>
+    <span>Scroll</span>
+  </a>
 
   <script>
+    // Show love note
     function showMessage() {
-      document.getElementById("message").style.display = "block";
+      document.getElementById('message').style.display = 'block';
     }
 
-    // Floating hearts animation
+    // Floating hearts
     function createHeart() {
-      const heart = document.createElement("div");
-      heart.className = "heart";
-      heart.style.left = Math.random() * window.innerWidth + "px";
-      heart.style.top = window.innerHeight + "px";
-      heart.style.background = "hsl(" + Math.random()*360 + ", 70%, 60%)";
+      const heart = document.createElement('div');
+      heart.className = 'heart';
+      heart.style.left = Math.random() * window.innerWidth + 'px';
+      heart.style.background = `hsl(${Math.random()*360}, 70%, 60%)`;
       document.body.appendChild(heart);
-
-      setTimeout(() => {
-        heart.remove();
-      }, 6000);
+      setTimeout(() => heart.remove(), 7000);
     }
+    const heartTimer = setInterval(createHeart, 500);
 
-    setInterval(createHeart, 500);
+    // Image loader: tries common paths, then falls back to an embedded placeholder
+    (function loadPhoto() {
+      const photoEl = document.getElementById('photo');
+      const srcCandidates = [
+        'images/photo.jpg',
+        'photo.jpg',
+        'images/love.jpg',
+        '63e23435-b6e9-40c1-b84a-9fe85c8c8e5a.jfif' // your earlier filename
+      ];
+
+      const placeholderSVG = encodeURIComponent(`
+        <svg xmlns='http://www.w3.org/2000/svg' width='600' height='750'>
+          <defs>
+            <linearGradient id='g' x1='0' x2='1' y1='0' y2='1'>
+              <stop offset='0%' stop-color='#ffafbd'/>
+              <stop offset='100%' stop-color='#ffc3a0'/>
+            </linearGradient>
+          </defs>
+          <rect width='100%' height='100%' fill='url(#g)'/>
+          <g transform='translate(300,360) rotate(45)'>
+            <rect x='-70' y='-70' width='140' height='140' rx='10' fill='white' opacity='0.8'/>
+            <circle cx='0' cy='-70' r='70' fill='white' opacity='0.8'/>
+            <circle cx='-70' cy='0' r='70' fill='white' opacity='0.8'/>
+          </g>
+          <text x='50%' y='92%' text-anchor='middle' font-family='Segoe UI, Arial' font-size='28' fill='white'>Add your photo at images/photo.jpg</text>
+        </svg>`);
+
+      function tryNext(i){
+        if(i >= srcCandidates.length){
+          photoEl.src = 'data:image/svg+xml;utf8,' + placeholderSVG;
+          return;
+        }
+        const img = new Image();
+        img.onload = () => { photoEl.src = srcCandidates[i]; };
+        img.onerror = () => tryNext(i+1);
+        img.src = srcCandidates[i];
+      }
+      tryNext(0);
+    })();
   </script>
 </body>
 </html>
