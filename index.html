@@ -1,217 +1,327 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="UTF-8">
   <title>Happy Anniversary ❤️</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    :root { --gap: 20px; }
-    html { scroll-behavior: smooth; }
-    * { box-sizing: border-box; }
     body {
       margin: 0;
       min-height: 100vh;
-      background: linear-gradient(135deg, #ffafbd, #ffc3a0);
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, 'Comic Sans MS', cursive, sans-serif;
-      overflow-x: hidden;
-    }
-
-    section {
-      min-height: 100vh;
       display: flex;
       flex-direction: column;
-      justify-content: center;
       align-items: center;
+      background: linear-gradient(135deg, #ffafbd, #ffc3a0);
+      font-family: 'Comic Sans MS', cursive, sans-serif;
       text-align: center;
-      padding: 60px 20px;
-      gap: var(--gap);
-      position: relative;
-      z-index: 1; /* keep above hearts */
     }
 
-    img#photo {
-      width: min(80vw, 340px);
-      aspect-ratio: 4 / 5;
-      object-fit: cover;
-      border-radius: 22px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    /* Main content wrapper */
+    .card-container {
+      position: relative;
+      top: 20px;
+      width: 95%;
+      max-width: 700px;
+    }
+
+    img.main-photo {
+      width: 100%;
+      max-width: 320px;
+      height: auto;
+      border-radius: 20px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+      margin-bottom: 20px;
     }
 
     h1 {
       color: #fff;
-      font-size: clamp(2rem, 6vw, 3.2rem);
-      text-shadow: 2px 2px 5px rgba(0,0,0,0.25);
-      margin: 0 0 4px 0;
-    }
-
-    p.lead {
-      color: #fff;
-      opacity: 0.95;
-      max-width: 680px;
-      font-size: clamp(1rem, 2.2vw, 1.25rem);
-      line-height: 1.8;
-      margin: 0 auto;
+      font-size: 2.5rem;
+      text-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+      margin-bottom: 20px;
     }
 
     button {
       padding: 12px 24px;
       font-size: 1.1rem;
       border: none;
-      border-radius: 999px;
+      border-radius: 25px;
       background: #ff6f91;
       color: white;
       cursor: pointer;
-      transition: transform 0.2s, filter 0.2s;
-      box-shadow: 0 10px 22px rgba(255, 70, 120, 0.35);
+      margin: 8px;
+      transition: transform 0.2s;
     }
 
-    button:hover { transform: translateY(-2px) scale(1.04); filter: brightness(1.05); }
+    button:hover {
+      transform: scale(1.05);
+      background: #ff3f6c;
+    }
 
     #message {
-      display: none;
+      margin: 25px auto;
+      font-size: 1.2rem;
       color: #fff;
-      max-width: 720px;
-      font-size: clamp(1.05rem, 2.4vw, 1.4rem);
-      line-height: 1.9;
-      background: rgba(255, 255, 255, 0.12);
-      padding: 18px 20px;
-      border-radius: 16px;
-      backdrop-filter: blur(2px);
+      text-align: center;
+      display: none;
+      line-height: 1.6;
+      padding: 0 15px;
+    }
+
+    /* Modal overlay */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.9);
+      justify-content: center;
+      align-items: center;
+      overflow: auto;
+      padding: 20px;
+    }
+    .modal-content {
+      background: #fff;
+      border-radius: 15px;
+      padding: 20px;
+      max-width: 1000px;
+      width: 95%;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 15px;
+      justify-items: center;
+    }
+    .modal-content img,
+    .modal-content video {
+      width: 100%;
+      max-width: 200px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    }
+    .close {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: rgba(0,0,0,0.6);
+      color: #fff;
+      font-size: 2.5rem;
+      cursor: pointer;
+      font-weight: bold;
+      line-height: 1;
+      padding: 5px 15px;
+      border-radius: 50%;
+      z-index: 1100;
+      transition: background 0.2s;
+    }
+    .close:hover {
+      background: rgba(255, 0, 0, 0.8);
     }
 
     /* Floating hearts */
     .heart {
-      position: fixed;
-      width: 22px; height: 22px;
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background: red;
       transform: rotate(45deg);
-      animation: floatUp 7s linear infinite;
-      top: 100vh; left: 0;
-      pointer-events: none;
-      z-index: 0; /* behind content */
+      animation: floatUp 6s linear infinite;
     }
-    .heart, .heart::before, .heart::after { background: #ff4d6d; }
-    .heart::before, .heart::after {
+    .heart::before,
+    .heart::after {
       content: "";
       position: absolute;
-      width: 22px; height: 22px;
+      width: 20px;
+      height: 20px;
+      background: red;
       border-radius: 50%;
     }
-    .heart::before { top: -11px; left: 0; }
-    .heart::after { left: -11px; top: 0; }
+    .heart::before { top: -10px; left: 0; }
+    .heart::after { left: -10px; top: 0; }
 
     @keyframes floatUp {
-      0%   { transform: translateY(0) rotate(45deg); opacity: 1; }
-      100% { transform: translateY(-110vh) rotate(45deg); opacity: 0; }
+      0% { transform: translateY(0) rotate(45deg); opacity: 1; }
+      100% { transform: translateY(-800px) rotate(45deg); opacity: 0; }
     }
 
-    /* Scroll hint */
-    .scroll-hint {
-      position: fixed;
-      bottom: 18px; left: 50%; transform: translateX(-50%);
-      text-decoration: none; color: white;
-      font-size: 0.95rem;
-      display: inline-flex; flex-direction: column; align-items: center; gap: 6px;
-      z-index: 2;
-      opacity: 0.9;
+    /* Responsive Adjustments */
+    @media (max-width: 768px) {
+      h1 { font-size: 2rem; }
+      button { font-size: 1rem; padding: 10px 20px; }
+      #message { font-size: 1rem; }
     }
-    .chev {
-      width: 22px; height: 22px; border-right: 2px solid #fff; border-bottom: 2px solid #fff; transform: rotate(45deg);
-      animation: bounce 1.6s infinite;
+    @media (max-width: 480px) {
+      h1 { font-size: 1.6rem; }
+      img.main-photo { max-width: 260px; }
     }
-    @keyframes bounce { 0%,100%{ transform: translateY(0) rotate(45deg);} 50%{ transform: translateY(6px) rotate(45deg);} }
+    .message-box {
+  position: relative;
+  margin: 25px auto;
+  padding: 20px;
+  max-width: 700px;
+  background: rgba(255, 255, 255, 0.15);
+  border: 2px solid #fff;
+  border-radius: 20px;
+  color: #fff;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+  overflow: hidden; /* keeps hearts inside */
+}
 
-    /* Accessibility: reduce motion */
-    @media (prefers-reduced-motion: reduce) {
-      .heart { animation: none; display: none; }
-      .chev { animation: none; }
-      html { scroll-behavior: auto; }
-    }
+.message-box .heart {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  background: red;
+  transform: rotate(45deg);
+  animation: floatUpBox 6s linear infinite;
+}
+
+.message-box .heart::before,
+.message-box .heart::after {
+  content: "";
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  background: red;
+  border-radius: 50%;
+}
+.message-box .heart::before { top: -8px; left: 0; }
+.message-box .heart::after { left: -8px; top: 0; }
+
+@keyframes floatUpBox {
+  0% { transform: translateY(0) rotate(45deg); opacity: 1; }
+  100% { transform: translateY(-300px) rotate(45deg); opacity: 0; }
+}
+
   </style>
 </head>
 <body>
-  <!-- Section 1: Photo + Greeting -->
-  <section id="s1">
-    <img id="photo" alt="Our Anniversary Photo" />
-    <h1>Happy Anniversary, Bhie ❤️</h1>
-    <p class="lead">You make every day brighter. Here's a little page I made just for us. Scroll down for a surprise. 💌</p>
-  </section>
+  <!-- Background Music -->
+  <audio id="bg-music" src="david_pomeranz_on_this_day_official_lyric_video_aac_48027.m4a" autoplay loop></audio>
 
-  <!-- Section 2: Surprise button -->
-  <section id="s2">
-    <h1>Click the Surprise 💌</h1>
-    <button id="surpriseBtn" onclick="showMessage()">Open Love Note</button>
-    <div id="message">You are the best part of my life. I’m so grateful for every moment with you. <br/>
-      Happy Anniversary, my love! 💖</div>
-  </section>
+  <div class="card-container">
+    <!-- Main picture -->
+    <img src="63e23435-b6e9-40c1-b84a-9fe85c8c8e5a.jfif" class="main-photo" alt="Our Anniversary Photo">
 
-  <!-- Section 3: Closing -->
-  <section id="s3">
-    <h1>Forever & Always ❤️</h1>
-    <p class="lead">No matter what happens, I’ll always be by your side. Thank you for being my everything. 🌹</p>
-  </section>
+    <h1>Happy Anniversary Bhie ❤️</h1>
+    <button onclick="showMessage()">Click for a Surprise 💌</button>
+    <button onclick="openModal('photos')">Show Our Photos 📸</button>
+    <button onclick="openModal('videos')">Show Our Videos 🎥</button>
 
-  <!-- Scroll hint to next section -->
-  <a href="#s2" class="scroll-hint" aria-label="Scroll down">
-    <div class="chev"></div>
-    <span>Scroll</span>
-  </a>
+    <div id="message" class="message-box">
+  🌹 Happy 5th Anniversary, My Bhie Ryzel Ann! 🌹
+  <br><br>
+  Today, September 5, 2025, is more than just a date—it’s the celebration of five wonderful years that we’ve shared together. From the very beginning until now, you’ve been my constant source of joy, strength, and love.
+  <br><br>
+  Bhie, these past five years with you have been the most meaningful chapters of my life. You’ve taught me the true meaning of love—one that is patient, kind, forgiving, and unbreakable. With you, every single day feels special. Every laugh, every hug, every “I love you” has filled my heart more than I could ever put into words.
+  <br><br>
+  I’m so grateful that God gave me you, Ryzel Ann Cuarteron, the most wonderful girlfriend and best friend I could ever ask for. You make my world brighter, my burdens lighter, and my dreams bigger.
+  <br><br>
+  As we celebrate our 5th anniversary, I want to promise you once again that I’ll never stop loving you. I’ll always choose you in every moment, in every day, and in every lifetime. Our journey together has only just begun, and I’m excited for all the years, memories, and dreams we’ll continue to build.
+  <br><br>
+  Here’s to us, Bhie—to five years of love behind us, and a forever of happiness ahead of us. 🥂❤️
+  <br><br>
+  Happy 5th Anniversary, my love, my Bhie, my forever Ryzel Ann! 💕✨
+</div>
+
+  </div>
+
+  <!-- Modal -->
+  <div id="modal" class="modal">
+    <span class="close" onclick="closeModal()">&times;</span>
+    <div id="modal-content" class="modal-content"></div>
+  </div>
 
   <script>
-    // Show love note
     function showMessage() {
-      document.getElementById('message').style.display = 'block';
+      document.getElementById("message").style.display = "block";
+      window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
     }
 
     // Floating hearts
     function createHeart() {
-      const heart = document.createElement('div');
-      heart.className = 'heart';
-      heart.style.left = Math.random() * window.innerWidth + 'px';
-      heart.style.background = `hsl(${Math.random()*360}, 70%, 60%)`;
+      const heart = document.createElement("div");
+      heart.className = "heart";
+      heart.style.left = Math.random() * window.innerWidth + "px";
+      heart.style.top = window.innerHeight + "px";
+      heart.style.background = "hsl(" + Math.random()*360 + ", 70%, 60%)";
       document.body.appendChild(heart);
-      setTimeout(() => heart.remove(), 7000);
+      setTimeout(() => heart.remove(), 6000);
     }
-    const heartTimer = setInterval(createHeart, 500);
+    setInterval(createHeart, 500);
 
-    // Image loader: tries common paths, then falls back to an embedded placeholder
-    (function loadPhoto() {
-      const photoEl = document.getElementById('photo');
-      const srcCandidates = [
-        'images/photo.jpg',
-        'photo.jpg',
-        'images/love.jpg',
-        '63e23435-b6e9-40c1-b84a-9fe85c8c8e5a.jfif' // your earlier filename
-      ];
+    // Photo & Video Sources
+    const photos = [
+      "6e6873ba-80d2-423b-9247-0d036a899b63.jfif",
+      "566c3f4c-e412-4d7c-bc6e-13f543f103e4.jfif",
+      "57006a74-d71f-439c-aff7-f9aa8994bdd1.jfif",
+      "a6279d92-5d77-4c59-b99f-a1ec878dd707.jfif",
+      "af907f52-7e99-4cf6-aa46-c21d76f1a68a.jfif",
+      "e28535b2-7a04-4474-a3e0-fe8eac281bb8.jfif",
+      "482216817_1885202095641940_4664189856030378102_n.jpg",
+      "472483909_1843113069850843_7114972271429784973_n.jpg",
+      "468434914_1812285252933625_427638424696569200_n.jpg"
+    ];
 
-      const placeholderSVG = encodeURIComponent(`
-        <svg xmlns='http://www.w3.org/2000/svg' width='600' height='750'>
-          <defs>
-            <linearGradient id='g' x1='0' x2='1' y1='0' y2='1'>
-              <stop offset='0%' stop-color='#ffafbd'/>
-              <stop offset='100%' stop-color='#ffc3a0'/>
-            </linearGradient>
-          </defs>
-          <rect width='100%' height='100%' fill='url(#g)'/>
-          <g transform='translate(300,360) rotate(45)'>
-            <rect x='-70' y='-70' width='140' height='140' rx='10' fill='white' opacity='0.8'/>
-            <circle cx='0' cy='-70' r='70' fill='white' opacity='0.8'/>
-            <circle cx='-70' cy='0' r='70' fill='white' opacity='0.8'/>
-          </g>
-          <text x='50%' y='92%' text-anchor='middle' font-family='Segoe UI, Arial' font-size='28' fill='white'>Add your photo at images/photo.jpg</text>
-        </svg>`);
+    const videos = [
+      "906db1a5-75d2-46f5-8365-b2966f780217.mp4",
+      "a4051212-b19e-4b6a-9dc8-bf5bd5794774.mp4",
+      "d9af625f-88e2-4392-9d15-1a021d84fc8a.mp4"
+    ];
 
-      function tryNext(i){
-        if(i >= srcCandidates.length){
-          photoEl.src = 'data:image/svg+xml;utf8,' + placeholderSVG;
-          return;
-        }
-        const img = new Image();
-        img.onload = () => { photoEl.src = srcCandidates[i]; };
-        img.onerror = () => tryNext(i+1);
-        img.src = srcCandidates[i];
+    // Modal
+    function openModal(type) {
+      const modal = document.getElementById("modal");
+      const content = document.getElementById("modal-content");
+      content.innerHTML = "";
+
+      if (type === "photos") {
+        photos.forEach(src => {
+          const img = document.createElement("img");
+          img.src = src;
+          img.alt = "Memory";
+          content.appendChild(img);
+        });
+      } else if (type === "videos") {
+        videos.forEach(src => {
+          const vid = document.createElement("video");
+          vid.src = src;
+          vid.controls = true;
+          content.appendChild(vid);
+        });
       }
-      tryNext(0);
-    })();
+
+      modal.style.display = "flex";
+    }
+
+    function closeModal() {
+      document.getElementById("modal").style.display = "none";
+    }
+
+    // Autoplay handling (in case browser blocks it)
+    const bgMusic = document.getElementById("bg-music");
+    document.addEventListener("click", () => {
+      if (bgMusic.paused) {
+        bgMusic.play().catch(err => console.log("Autoplay blocked, waiting for click"));
+      }
+    });
+    // Floating hearts inside message box only
+function createBoxHeart() {
+  const messageBox = document.querySelector(".message-box");
+  if (!messageBox || messageBox.style.display === "none") return;
+
+  const heart = document.createElement("div");
+  heart.className = "heart";
+  heart.style.left = Math.random() * messageBox.offsetWidth + "px";
+  heart.style.top = messageBox.offsetHeight + "px";
+  heart.style.background = "hsl(" + Math.random()*360 + ", 70%, 60%)";
+  messageBox.appendChild(heart);
+
+  setTimeout(() => heart.remove(), 6000);
+}
+setInterval(createBoxHeart, 800);
+
   </script>
 </body>
 </html>
